@@ -11,11 +11,12 @@
 
   <!-- Добавление статического CSS файла -->
   {% load static %}
-  <link rel="stylesheet" href="{% static 'css/styles.css' %}">
-  {% block head %}
-      <img src="{% static 'images/logotip2.jpg' %}" style="width:161px; height:100px;"  align="absmiddle">
-      <font size=7, color="blue">Сайт "Book Paradise"</font>
-  {% endblock %}
+    <link rel="shortcut icon" href="{% static 'images/favicon.png' %}" type="image/png">
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    {% block head %}
+        <img src="{% static 'images/logo.jpg' %}" style="width:161px; height:100px;"  align="absmiddle">
+        <font size=7, color="blue">Сайт "Book Paradise"</font>
+    {% endblock %}
 </head>
 
 <body>
