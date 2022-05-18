@@ -91,7 +91,6 @@ DATABASES = {
     # }
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        # 'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': os.environ.get('DB_NAME', 'dev_db'),
         'USER': os.environ.get('DB_USER', 'bookparadise'),
         'PASSWORD': os.environ.get('DB_PASSWORD', '210376'),
@@ -147,4 +146,10 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Переадресация на главную страницу сайта после входа в систему
 LOGIN_REDIRECT_URL = '/'
 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# stmp email configuration
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', 'bookparadise.robot@gmail.com')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '27VfmTHYcSOD0Ci9X2tILHTZaR27K')
