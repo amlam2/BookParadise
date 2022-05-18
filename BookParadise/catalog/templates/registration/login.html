@@ -29,11 +29,10 @@
     </tr>
   </table>
 
-  <input type="submit" value="Вход" />
+  <input class="btn btn-primary" type="submit" value="Вход" />
   <input type="hidden" name="next" value="{{ next }}" />
 </form>
 
-{# Предполагается, что вы настроили представление password_reset в своём URLconf#}
 <p><a href="{% url 'password_reset' %}">Утерян пароль?</a></p>
 
 {% endblock %}

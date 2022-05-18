@@ -1,5 +1,4 @@
 from django.shortcuts import render
-# from django.http import HttpResponse
 from django.http import *
 from .models import Book, Author, BookInstance, Genre
 from django.views import generic
@@ -8,7 +7,6 @@ from .forms import AuthorsForm
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 from .models import Book
-
 
 # Create your views here.
 def index(request):
@@ -20,11 +18,9 @@ def index(request):
     num_instances_available = BookInstance.objects.filter(status__exact=2).count()
     # Авторы книг
     num_authors = Author.objects.count()
-
     # Количество посещений этого view, подсчитанное в переменной session
     num_visits = request.session.get('num_visits', 0)
     request.session['num_visits'] = num_visits + 1
-
     # Отрисовка HTML-шаблона index.html с данными внутри переменной context
     return render(request, 'index.html', context={
                                          'num_books': num_books,
@@ -37,7 +33,7 @@ def index(request):
 
 class BookListView(generic.ListView):
     model = Book
-    paginate_by = 10
+    paginate_by = 5
 
 
 class BookDetailView(generic.DetailView):
@@ -46,7 +42,7 @@ class BookDetailView(generic.DetailView):
 
 class AuthorListView(generic.ListView):
     model = Author
-    paginate_by = 4
+    paginate_by = 5
 
 
 class LoanedBooksByUserListView(LoginRequiredMixin, generic.ListView):
@@ -55,7 +51,7 @@ class LoanedBooksByUserListView(LoginRequiredMixin, generic.ListView):
     """
     model = BookInstance
     template_name = 'catalog/bookinstance_list_borrowed_user.html'
-    paginate_by = 10
+    paginate_by = 5
 
     def get_queryset(self):
         return BookInstance.objects.filter(borrower=self.request.user).filter(status__exact='2').order_by('due_back')
@@ -65,8 +61,7 @@ class LoanedBooksByUserListView(LoginRequiredMixin, generic.ListView):
 def authors_add(request):
     author = Author.objects.all()
     authorsform = AuthorsForm()
-    return render(request, "catalog/authors_add.html",
-                  {"form": authorsform, "author": author})
+    return render(request, "catalog/authors_add.html", {"form": authorsform, "author": author})
 
 
 # Сохранение данных об авторах в БД
@@ -120,3 +115,9 @@ class BookUpdate(UpdateView):
 class BookDelete(DeleteView):
     model = Book
     success_url = reverse_lazy('books')
+
+
+# from django.views.generic import TemplateView
+
+# class LogoutPage(TemplateView):
+#     template_name = 'registration/logged_out.html'

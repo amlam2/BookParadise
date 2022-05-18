@@ -1,5 +1,6 @@
 from django.urls import path, re_path, include
 from . import views
+# from django.contrib.auth import logout
 
 urlpatterns = [
     path('', views.index, name='index'),
@@ -14,9 +15,9 @@ urlpatterns = [
 
 
 # Добавление URL-адреса для входа в систему
-urlpatterns += [
-    path('accounts/', include('django.contrib.auth.urls')),
-]
+# urlpatterns += [
+#     path('accounts/', include('django.contrib.auth.urls')),
+# ]
 
 
 urlpatterns += [

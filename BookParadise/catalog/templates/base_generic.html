@@ -2,74 +2,135 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  {% block title %}<title>Book Paradise</title>{% endblock %}
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        {% block title %}
+            <title>
+                Book Paradise
+            </title>
+        {% endblock %}
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <style type="text/css">
+            #footer {
+                position: fixed;
+                left: 0; bottom: 0;
+                padding: 10px;
+                background: #39b54a;
+                color: #fff;
+                width: 100%;
+            }
 
-  <!-- Добавление статического CSS файла -->
-  {% load static %}
-    <link rel="shortcut icon" href="{% static 'images/favicon.png' %}" type="image/png">
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
-    {% block head %}
-        <img src="{% static 'images/logo.jpg' %}" style="width:161px; height:100px;"  align="absmiddle">
-        <font size=7, color="blue">Сайт "Book Paradise"</font>
-    {% endblock %}
+           body {
+                font-family: "Lato", sans-serif;
+            }
+
+            .sidenav {
+                width: 180px;
+                position: fixed;
+                z-index: 1;
+                top: 150px;
+                left: 10px;
+                background: #eee;
+                overflow-x: hidden;
+                padding: 8px 0;
+            }
+
+            .sidenav a {
+                padding: 6px 8px 6px 16px;
+                text-decoration: none;
+                font-size: 25px;
+                color: #2196F3;
+                display: block;
+            }
+
+            .sidenav a:hover {
+                color: #064579;
+            }
+
+            .main {
+                margin-left: 140px;
+                font-size: 28px;
+                padding: 0px 10px;
+            }
+
+            @media screen and (max-height: 450px) {
+                .sidenav {padding-top: 15px;}
+                .sidenav a {font-size: 18px;}
+            }
+        </style>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+        <!-- Добавление статического CSS файла -->
+        {% load static %}
+            <link rel="shortcut icon" href="{% static 'images/favicon.png' %}" type="image/png">
+            <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+        {% block head %}
+            <img src="{% static 'images/logo.jpg' %}" style="width:161px; height:100px;"  align="absmiddle">
+            <font size=5, color="blue">Удалённая библиотека</font>&emsp;
+            <font size=7, color="blue">"Book Paradise"</font>&emsp;&mdash;&emsp;
+            {% if user.is_authenticated %}
+                <font size=5, color="black">Добро пожаловать {{ user.get_username }}!</font>
+            {% else %}
+                <font size=5, color="black">Войдите в систему</font>
+            {% endif %}
+        {% endblock %}
 </head>
 
 <body>
-  <div class="container-fluid">
-
-    <div class="row">
-      <div class="col-sm-2">
-      {% block sidebar %}
-      <ul class="sidebar-nav">
-          <li><a href="{% url 'index' %}">Главная страница</a></li>
-          <li><a href="{% url 'books' %}">Все книги</a></li>
-          <li><a href="{% url 'authors' %}">Все авторы</a></li>
-          <li><a href="{% url 'authors_add' %}">Редактировать авторов</a></li>
-          <li><a href="{% url 'book_create' %}">Добавить книгу</a></li>
-          {% if user.is_authenticated %}
-            <li>Пользователь: {{ user.get_username }}</li>
-            <li><a href="{% url 'my-borrowed' %}">Мои заказы</a></li>
-            <li><a href="{% url 'logout'%}?next={{ request.path }}">Выход</a></li>
-          {% else %}
-            <li><a href="{% url 'login'%}?next={{ request.path }}">Вход</a></li>
-          {% endif %}
-      </ul>
-      {% endblock %}
-      </div>
-      <div class="col-sm-10 ">
-      {% block content %}{% endblock %}
-          <!-- Постраничный вывод текста -->
-          {% block pagination %}
-              {% if is_paginated %}
-                  <div class="pagination">
-                      <span class="page-links">
-                          {% if page_obj.has_previous %}
-                              <a href="{{ request.path }}?page={{ page_obj.previous_page_number }}">Предыдущая</a>
-                          {% endif %}
-                          <span class="page-current">
-                              Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}.
-                          </span>
-                          {% if page_obj.has_next %}
-                              <a href="{{ request.path }}?page={{ page_obj.next_page_number }}">Следующая</a>
-                          {% endif %}
-                      </span>
-                  </div>
-              {% endif %}
-          {% endblock %}
-
-      {% block footer %}
-         {% block copyright %}
-       <p>Copyright ООО "Рога и копыта", 2022. Все права защищены</p>
-         {% endblock %}
-      {% endblock %}
-
-      </div>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-2">
+                {% block sidebar %}
+                    <div class="sidenav">
+                        <li><a href="{% url 'index' %}">Домой</a></li>
+                        <li><a href="{% url 'books' %}">Книги</a></li>
+                        {% if request.user.is_superuser %}
+                            <li><a href="{% url 'authors_add' %}">Авторы</a></li>
+                        {% else %}
+                            <li><a href="{% url 'authors' %}">Авторы</a></li>
+                        {% endif %}
+                        {% if user.is_authenticated %}
+                            <!-- <li>Пользователь: {{ user.get_username }}</li> -->
+                            {% if not request.user.is_superuser %}
+                                <li><a href="{% url 'my-borrowed' %}">Мои заказы</a></li>
+                            {% endif %}
+                            <li><a href="{% url 'logout'%}?next={{ request.path }}">Выход</a></li>
+                        {% else %}
+                            <li><a href="{% url 'login'%}?next={{ request.path }}">Вход</a></li>
+                        {% endif %}
+                    </div>
+                {% endblock %}
+            </div>
+            <div class="col-sm-10 ">
+                {% block content %}{% endblock %}
+                    <!-- Постраничный вывод текста (пагинация) -->
+                    {% block pagination %}
+                      {% if is_paginated %}
+                          <div class="pagination">
+                              <span class="page-links">
+                                  {% if page_obj.has_previous %}
+                                      <a href="{{ request.path }}?page={{ page_obj.previous_page_number }}">&Lt; Предыдущая</a>
+                                  {% endif %}
+                                  <span class="page-current">
+                                      Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}.
+                                  </span>
+                                  {% if page_obj.has_next %}
+                                      <a href="{{ request.path }}?page={{ page_obj.next_page_number }}">Следующая &Gt;</a>
+                                  {% endif %}
+                              </span>
+                          </div>
+                      {% endif %}
+                    {% endblock %}
+                    {% block footer %}
+                        {% block copyright %}
+                            <div id="footer">
+                                <p>&copy; 2022 ООО "Рога и копыта Inc." Все права защищены</p>
+                            </div>
+                        {% endblock %}
+                    {% endblock %}
+            </div>
+        </div>
     </div>
-  </div>
 </body>
 </html>

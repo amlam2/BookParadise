@@ -2,7 +2,7 @@
 {% extends "base_generic.html" %}
 {% block content %}
 
-  <h3>Список авторов в БД</h3>
+  <h1>Изменение данных автора</h1>
   <h4>{{author.first_name}} {{author.last_name}}</h4>
 
     <form method="POST">
@@ -19,7 +19,7 @@
         <p> <label>Измените дату смерти</label><br>
             <input type="date" name="date_of_death" value="{{ author.date_of_death }}" />
         </p>
-        <input type="submit" value="Сохранить" >
+        <input class="btn btn-primary" type="submit" value="Сохранить" >
     </form>
 
 {% endblock %}
